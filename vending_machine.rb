@@ -13,21 +13,17 @@
 # vm.return_money
 
 class VendingMachine
-  # ステップ０　お金の投入と払い戻しの例コード
-  # ステップ１　扱えないお金の例コード
-  # 10円玉、50円玉、100円玉、500円玉、1000円札を１つずつ投入できる。
   MONEY = [10, 50, 100, 500, 1000].freeze
-  # （自動販売機に投入された金額をインスタンス変数の @slot_money に代入する）
   def initialize
-    # 最初の自動販売機に入っている金額は0円
     @drink_table = {}
-    5.times { store Drink.cola }
+      5.times { store Drink.cola }
+      5.times { store Drink.redbull }
+      5.times { store Drink.water }
     @slot_money = 0
     @sale_money = 0
   end
-  # 投入金額の総計を取得できる。
+
   def current_slot_money
-    # 自動販売機に入っているお金を表示する
     @slot_money
   end
   # 10円玉、50円玉、100円玉、500円玉、1000円札を１つずつ投入できる。
@@ -44,6 +40,7 @@ class VendingMachine
   end
   # 払い戻し操作を行うと、投入金額の総計を釣り銭として出力する。
   def return_money
+    puts "---------"
     # 返すお金の金額を表示する
     puts "釣銭:#{@slot_money}"
     # 自動販売機に入っているお金を0円に戻す
@@ -64,29 +61,45 @@ class VendingMachine
     end
     puts "コーラの値段:#{@drink_table_arranged[:cola][:price]}"
     puts "ストック:#{@drink_table_arranged[:cola][:stock]}"
+    puts "レッドブルの値段:#{@drink_table_arranged[:redbull][:price]}"
+    puts "ストック:#{@drink_table_arranged[:redbull][:stock]}"
+    puts "水の値段:#{@drink_table_arranged[:water][:price]}"
+    puts "ストック:#{@drink_table_arranged[:water][:stock]}"
     puts "---------"
   end
 
-  def check_stock_and_money
+  def check_stock_and_money(drinks)
     puts "check_stock_and_moneyを使っています"
-    if @slot_money >= 100 && @drink_table_arranged[:cola][:stock] > 0
-       @drink_table_arranged[:cola][:stock] -= 1
-       puts "現在ストック:#{@drink_table_arranged[:cola][:stock]}"
-       @sale_money += @drink_table_arranged[:cola][:price]
-       puts "売上:#{@sale_money}"
-       @slot_money -= @drink_table_arranged[:cola][:price]
-       return_money
+    if @slot_money >= @drink_table_arranged[drinks][:price] && @drink_table_arranged[drinks][:stock] > 0
+       purchase(drinks)
+       return return_money
+    elsif @slot_money > @drink_table_arranged[drinks][:price] && @drink_table_arranged[drinks][:stock] == 0
+       puts "在庫がないよ"
     else
-       return_money
+       puts "お金が足りないよ"
     end
-    puts "---------"
   end
 
+  def purchase(drinks)
+    puts "買えたよ！"
+    @drink_table_arranged[drinks][:stock] -= 1
+    puts "現在ストック:#{@drink_table_arranged[drinks][:stock]}"
+    @sale_money += @drink_table_arranged[drinks][:price]
+    @slot_money -= @drink_table_arranged[drinks][:price]
+  end
+
+  def sales
+    puts "---------"
+    puts "売上:#{@sale_money}"
+  end
 end
 
 class Drink
-  attr_accessor :name, :price
-
+  attr_reader :name, :price
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
   def self.cola
     self.new :cola, 120
   end
@@ -98,15 +111,10 @@ class Drink
   def self.water
     self.new :water, 100
   end
-
-  def initialize(name, price)
-    @name = name
-    @price = price
-  end
 end
 
 vm = VendingMachine.new
 vm.slot_money(500)
 vm.stock_info
-vm.check_stock_and_money
-vm.stock_info
+vm.check_stock_and_money(:cola)
+vm.sales
