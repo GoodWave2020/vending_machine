@@ -18,3 +18,6 @@
 <br>
 #### やりたいこと
 [古澤さんの作ってくれたリストページ](https://github.com/GoodWave2020/vending_machine/projects/1)
+
+##テスト###
+###共同開発でpushする練習
