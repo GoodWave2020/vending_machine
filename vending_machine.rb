@@ -49,17 +49,23 @@ class VendingMachine
 
   def check_stock_and_money(drinks)
     if @slot_money >= @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size > 0
-       purchase(drinks)
-       return return_money
+      true
     else @slot_money > @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size == 0
-       return false
+      false
     end
   end
 
   def purchase(drinks)
-    @drink_table[drinks][:drinks].shift()
-    @sale_money += @drink_table[drinks][:price]
-    @slot_money -= @drink_table[drinks][:price]
+    if check_stock_and_money(drinks)
+      @drink_table[drinks][:drinks].shift()
+      @sale_money += @drink_table[drinks][:price]
+      @slot_money -= @drink_table[drinks][:price]
+    else
+      false
+    end
+  end
+
+  def dispense
   end
 
   def sales
@@ -88,7 +94,8 @@ class Drink
 end
 
 vm = VendingMachine.new
-vm.slot_money(500)
+vm.slot_money(100)
 # vm.stock_and_price(:cola)
-vm.check_stock_and_money(:cola)
+p vm.purchase(:cola)
+p vm.stock(:cola)
 # vm.sales

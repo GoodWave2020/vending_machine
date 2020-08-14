@@ -36,13 +36,19 @@ class VendingMachine
   def return_money
     @slot_money = 0
   end
+
+  def check_stock_and_money(drinks)
+    if @slot_money >= @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size > 0
+       purchase(drinks)
+       return return_money
+    else @slot_money > @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size == 0
+       return false
+    end
+  end
 end
 
 # 売り上げ管理
 class Sales_management
-  def initialize
-    @vm = VendingMachine
-  end
 
   def purchase(drinks)
     @drink_table[drinks][:drinks].shift()
@@ -61,14 +67,7 @@ class Sales_management
     end
   end
 
-  def check_stock_and_money(drinks)
-    if @slot_money >= @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size > 0
-       purchase(drinks)
-       return return_money
-    else @slot_money > @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size == 0
-       return false
-    end
-  end
+
 end
 
 # 在庫管理
@@ -81,7 +80,7 @@ end
 # 飲み物作るところ
 class Drink
   class << self
-    # attr_reader :name, :price
+    attr_reader :name, :price
     def initialize(name, price)
       @name = name
       @price = price
