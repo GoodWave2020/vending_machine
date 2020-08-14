@@ -12,6 +12,7 @@
 # 作成した自動販売機に入れたお金を返してもらう
 # vm.return_money
 
+# 自動販売機の制御
 class VendingMachine
   MONEY = [10, 50, 100, 500, 1000].freeze
   def initialize
@@ -36,6 +37,29 @@ class VendingMachine
     @slot_money = 0
   end
 
+  def check_stock_and_money(drinks)
+    if @slot_money >= @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size > 0
+       purchase(drinks)
+       return return_money
+    else @slot_money > @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size == 0
+       return false
+    end
+  end
+end
+
+# 売り上げ管理
+class Sales_management
+
+  def purchase(drinks)
+    @drink_table[drinks][:drinks].shift()
+    @sale_money += @drink_table[drinks][:price]
+    @slot_money -= @drink_table[drinks][:price]
+  end
+
+  def sales
+    @sale_money
+  end
+
   def store(drink)
     nil.tap do
       @drink_table[drink.name] = { price: drink.price, drinks: [] } unless @drink_table.has_key? drink.name
@@ -43,59 +67,44 @@ class VendingMachine
     end
   end
 
+
+end
+
+# 在庫管理
+class Inventory_management
   def stock(drinks)
     @drink_table[drinks][:drinks].size
   end
-
-  def check_stock_and_money(drinks)
-    if @slot_money >= @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size > 0
-      true
-    else @slot_money > @drink_table[drinks][:price] && @drink_table[drinks][:drinks].size == 0
-      false
-    end
-  end
-
-  def purchase(drinks)
-    if check_stock_and_money(drinks)
-      @drink_table[drinks][:drinks].shift()
-      @sale_money += @drink_table[drinks][:price]
-      @slot_money -= @drink_table[drinks][:price]
-    else
-      false
-    end
-  end
-
-  def dispense
-  end
-
-  def sales
-    @sale_money
-  end
 end
 
+# 飲み物作るところ
 class Drink
-  attr_reader :name, :price
-  def initialize(name, price)
-    @name = name
-    @price = price
-  end
+  class << self
+    attr_reader :name, :price
+    def initialize(name, price)
+      @name = name
+      @price = price
+    end
 
-  def self.cola
-    self.new :cola, 120
-  end
+    def cola
+      self.new :cola, 120
+    end
 
-  def self.redbull
-    self.new :redbull, 200
-  end
+    def redbull
+      self.new :redbull, 200
+    end
 
-  def self.water
-    self.new :water, 100
+    def water
+      self.new :water, 100
+    end
   end
 end
+
 
 vm = VendingMachine.new
-vm.slot_money(100)
+sm = Sales_management.new(:cola)
+im = Inventory_management.new
+vm.slot_money(500)
 # vm.stock_and_price(:cola)
-p vm.purchase(:cola)
-p vm.stock(:cola)
+vm.check_stock_and_money(:cola)
 # vm.sales
