@@ -9,10 +9,6 @@ class VendingMachine
     @sale_money = 0
   end
 
-  def current_slot_money
-    @slot_money
-  end
-
   def insert_money(money)
     return false unless MONEY.include?(money)
     @slot_money += money
@@ -20,10 +16,6 @@ class VendingMachine
 
   def return_money
     @slot_money.tap {@slot_money = 0}
-  end
-
-  def sales
-    @sale_money
   end
 
   def check_stock_and_money(drinks)
