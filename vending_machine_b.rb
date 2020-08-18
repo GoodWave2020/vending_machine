@@ -13,7 +13,7 @@ class VendingMachine
     @slot_money
   end
 
-  def slot_money(money)
+  def insert_money(money)
     return false unless MONEY.include?(money)
     @slot_money += money
   end
