@@ -1,4 +1,6 @@
 class VendingMachine
+  attr_reader :slot_money
+
   MONEY = [10, 50, 100, 500, 1000].freeze
   def initialize
     @ic = InventoryController.new
@@ -17,7 +19,7 @@ class VendingMachine
   end
 
   def return_money
-    @slot_money = 0
+    @slot_money.tap {@slot_money = 0}
   end
 
   def sales
