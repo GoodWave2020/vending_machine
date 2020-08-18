@@ -4,7 +4,7 @@ class VendingMachine
   MONEY = [10, 50, 100, 500, 1000].freeze
   def initialize
     @ic = InventoryController.new
-    @price = {cola: Drink.cola.price, water: Drink.water.price, redbull: Drink.redbull.price}
+    @price = {cola: Drink.cola.price}
     @slot_money = 0
     @sale_money = 0
   end
@@ -53,8 +53,6 @@ class InventoryController
   def initialize
     @drink_table = {}
       5.times { store Drink.cola }
-      5.times { store Drink.redbull }
-      5.times { store Drink.water }
   end
 
   def store(drink)
