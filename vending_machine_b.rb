@@ -1,5 +1,5 @@
 class VendingMachine
-  attr_reader :slot_money
+  attr_reader :slot_money, :sale_money
 
   MONEY = [10, 50, 100, 500, 1000].freeze
   def initialize
